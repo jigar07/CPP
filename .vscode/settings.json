@@ -65,6 +65,7 @@
         "ratio": "cpp",
         "semaphore": "cpp",
         "sstream": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "queue": "cpp"
     }
 }
