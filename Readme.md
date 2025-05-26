@@ -1,9 +1,60 @@
+- tasks.json is used for build and run
+- launch.json is used for running
 - Build using command line
+  - windows:
+```bash
+g++ main.cpp semaphore.cpp -o main.exe -pthread
+```
+- Ubuntu
 ```bash
 g++ main.cpp semaphore.cpp -o main.exe -pthread
 ```
 - Create following tasks.json. "*.cpp" indicates include all cpp files of current folder which is compiled using ctrl+shift+B. This file should be created at .vscode folder of current project. (No need to create files inside the separate project folder after this.)
 - -std=c++20 to build using CPP 20
+- tasks.json for ubuntu:
+```json
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++ build active file",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-std=c++20",
+                "-g",
+                "*.cpp",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}.out"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Build C++ file using g++"
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: Run the compiled file",
+            "command": "${fileDirname}/${fileBasenameNoExtension}.out",
+            "args": [],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "detail": "Run the compiled program"
+        }
+    ],
+    "version": "2.0.0"
+}
+```
+- tasks.json for windows:
 ```json
 {
     "tasks": [
