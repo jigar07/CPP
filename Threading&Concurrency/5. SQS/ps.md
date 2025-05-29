@@ -20,7 +20,9 @@ How SQS works (at a high level):
 ### Thought process
 - For any problem HLD or LLD or concurrency or any problem (even in trading, life etc.) can start from small and then expand
 - First think of how single consumer of type 1 can consume one message (SQS)
-  - SQS - publish, registration
-  - ConsumerWorker - lock handling, state handling and retrive the message and then call consumer.consume. (So, it acts as middlement)
+  - SQS - publish, registration (registration of new Consumer and starts thread for it. Maybe can implement ConsumerWorker similar to TaskScheduler)
+    - ConsumerWorker can do(It will be created for all the consumers. So, threads of ConsumerWorkers are created which is equalt to number of consumers) - lock handling, state handling and retrive the message and then call consumer.consume. (So, it acts as middleman). Right now this is done in SQS class itself
   - Consumer - process message
 - Then think of how multiple consumer of type 1 can consume one message (SQS)
+- SQS has queue to store the messages, mutex and condition_variable for concurrency handling.
+  - This can be passed to ConsumerWorker and ConsumerWorker uses it for processing and call consumer.consume if and message is found

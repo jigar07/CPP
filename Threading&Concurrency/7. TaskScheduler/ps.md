@@ -26,3 +26,16 @@ For alarm clock also same code can be used. Naming needs to be done as per alarm
 
 ### Note
 ConsumerWorker is very very difficult for this. 3 while loops are there(1 extra while loop)
+
+### Thought process
+- Basically we want TaskScheduler.
+- TaskScheduler add the consumerWorkers which do the tasks. So, it has registerConsumer function. Which takes the Consumer object and starts consumerWorkers to consumer this Consumer object
+- TaskScheduler has scheduledAfter method which add the recurring tasks which needs to be executed. So, this are the actual task which will be triggered at scheduled time by the Consumer Worker. So, these tasks are added to ConsumerWorker queue.
+- Consumer has consume method which does the actual task when it is scheduled
+- ConsumerWorkers actual trigger task consume method for the Consumer object
+- So, ConsumerWorker is the most important tasks, because:
+  - It has list of tasks which needs to scheduled (This will be shared across different ConsumerWorker threads). So, locking on this required (priority queue)
+  - Consumer object which actually executes the task.
+  - mutex which is shared across different ConsumerWorker threads
+  - condition_variable which is shared across different ConsumerWorker threads
+- As priority queue, mutex and condition_variable are shared across differnt ConsumerWorkers, they are created in TaskScheduler and whenevern new ConsumerWorker is created, they are passed.
