@@ -49,7 +49,7 @@ public:
                     cout << this_thread::get_id() << ": " << task.message
                          << ", Going to wait" << endl;
 
-                    cv.wait_for(lock, milliseconds(millisToWait));
+                    cv.wait_for(lock, milliseconds(millisToWait)); // wait for timeout on conditional variable.
                     cout << this_thread::get_id() << ": " << task.message
                          << ", came out of wait" << endl;
                 } else {
