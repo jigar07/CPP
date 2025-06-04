@@ -103,8 +103,8 @@ public:
 class StockExchange {
     unordered_map<string, StockOrder> stockOrderBook;
     mutex mtx;
-    // check wht vector is used
-    // Using this it will not terminate unexpectedly when main thread exits.
+    // check why vector is used?
+        // Using this it will not terminate unexpectedly when main thread exits.
     vector<thread> executorThreads;
 public:
     void addExecutor(string stock) {

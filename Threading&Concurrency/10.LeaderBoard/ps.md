@@ -1,0 +1,15 @@
+Concurrent game leaderboard
+- Ask whether expecting low level design. However, based on problem should be able to understand.
+  - If concurrency and all then multithreading
+  - If extensibility then LLD
+- Taking lock based on player would lead to performance bottleneck if too many players and lock consumes CPU
+  - So, instead of player level lock, we can take range based lock
+  - For this need to analyze the system and verify it
+- hasmap.put might also create issue as there can be collision. Hence, better to take lock on map if player is not available in map (`synchronized (state.playerMap)` instead of `synchronized (state.playerMap.get(playerId))`)
+- For `getLeaderboard` can create deep copy of map then sort and return - this will delay returning of result
+- Else can take lock on complete map - this will delay update
+- LeadeboardServiceReadTimeRanking
+- LeadeboardServiceWriteTimeRanking
+  - LeaderboardRankingWorker
+  - LeaderboardRankingWorkerState
+  - Instead of locking state and notifying all can run LeaderboardRankingWorker at fixed delay which will be simpler
