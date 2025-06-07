@@ -2,6 +2,16 @@ LLD Cohort January - 2024
 
 Splitwise: https://enginebogie.com/public/question/design-expense-sharing-app-like-splitwise/327
 
+#### ThoughProcess
+- Need to store input object as EXPENSE
+- Now strategy for input command. So, CommandHandler created with Expense and Show as subclass
+  - doesSupport method
+  - handleCommand method
+- Now different split strategy. So, ISplitStrategy created with EQUAL, EXACT and PERCENTAGE as subclass
+  - doesSupport method
+  - processSplitData method (To process while adding expense)
+  - calculateSplitParticipants (For any expense return exact amount x owes to y)
+    - This will be used to create actual result while running SHOW command
 
 #### Sample Input:
 
