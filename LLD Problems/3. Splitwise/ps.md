@@ -2,7 +2,7 @@ LLD Cohort January - 2024
 
 Splitwise: https://enginebogie.com/public/question/design-expense-sharing-app-like-splitwise/327
 
-#### ThoughProcess
+#### ThoughtProcess
 - Need to store input object as EXPENSE
 - Now strategy for input command. So, CommandHandler created with Expense and Show as subclass
   - doesSupport method
