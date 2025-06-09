@@ -5,6 +5,7 @@
 #include <chrono>
 #include <thread>
 #include <algorithm>
+using namespace std;
 
 // Forward declarations
 class TokensBucket;
@@ -12,7 +13,7 @@ class TokensBucket;
 // Interface for refill rule
 class IRefillRule {
 public:
-    virtual void refillBucket(TokensBucket& bucket, const std::string& entityId) = 0;
+    virtual void refillBucket(TokensBucket& bucket, const string& entityId) = 0;
     virtual ~IRefillRule() = default;
 };
 
@@ -34,7 +35,7 @@ public:
     }
 
     void refill(int count) {
-        tokens = std::min(capacity, tokens + count);
+        tokens = min(capacity, tokens + count);
     }
 };
 
@@ -42,18 +43,18 @@ public:
 class ConstantRateRefillRule : public IRefillRule {
     int tokensToAdd;
     int windowMillis;
-    std::unordered_map<std::string, long long> lastRefillMap;
+    unordered_map<string, long long> lastRefillMap;
 
     long long nowMillis() const {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::steady_clock::now().time_since_epoch()).count();
+        return chrono::duration_cast<chrono::milliseconds>(
+            chrono::steady_clock::now().time_since_epoch()).count();
     }
 
 public:
     ConstantRateRefillRule(int tokensToAdd_, int windowMillis_)
         : tokensToAdd(tokensToAdd_), windowMillis(windowMillis_) {}
 
-    void refillBucket(TokensBucket& bucket, const std::string& entityId) override {
+    void refillBucket(TokensBucket& bucket, const string& entityId) override {
         long long now = nowMillis();
 
         auto it = lastRefillMap.find(entityId);
@@ -73,47 +74,47 @@ public:
 // Interface for entities subject to rate limiting
 class IRateLimitingEntity {
 public:
-    virtual std::string getId() const = 0;
-    virtual std::shared_ptr<IRefillRule> getRefillRule() const = 0;
+    virtual string getId() const = 0;
+    virtual shared_ptr<IRefillRule> getRefillRule() const = 0;
     virtual ~IRateLimitingEntity() = default;
 };
 
 // User entity
 class User : public IRateLimitingEntity {
-    std::string userId;
-    std::shared_ptr<IRefillRule> refillRule;
+    string userId;
+    shared_ptr<IRefillRule> refillRule;
 
 public:
-    User(const std::string& id)
+    User(const string& id)
         : userId(id),
-          refillRule(std::make_shared<ConstantRateRefillRule>(5, 5000)) // 5 tokens per 5 seconds
+          refillRule(make_shared<ConstantRateRefillRule>(5, 5000)) // 5 tokens per 5 seconds
     {}
 
-    std::string getId() const override {
+    string getId() const override {
         return userId;
     }
 
-    std::shared_ptr<IRefillRule> getRefillRule() const override {
+    shared_ptr<IRefillRule> getRefillRule() const override {
         return refillRule;
     }
 };
 
 // API entity
 class API : public IRateLimitingEntity {
-    std::string apiName;
-    std::shared_ptr<IRefillRule> refillRule;
+    string apiName;
+    shared_ptr<IRefillRule> refillRule;
 
 public:
-    API(const std::string& name)
+    API(const string& name)
         : apiName(name),
-          refillRule(std::make_shared<ConstantRateRefillRule>(3, 3000)) // 3 tokens per 3 seconds
+          refillRule(make_shared<ConstantRateRefillRule>(3, 3000)) // 3 tokens per 3 seconds
     {}
 
-    std::string getId() const override {
+    string getId() const override {
         return apiName;
     }
 
-    std::shared_ptr<IRefillRule> getRefillRule() const override {
+    shared_ptr<IRefillRule> getRefillRule() const override {
         return refillRule;
     }
 };
@@ -127,11 +128,11 @@ public:
 
 // Token Bucket rate limiter implementation
 class TokenBucketRateLimiter : public IRateLimiter {
-    std::unordered_map<std::string, TokensBucket> buckets;
+    unordered_map<string, TokensBucket> buckets;
 
 public:
     bool isRequestAllowed(const IRateLimitingEntity& entity) override {
-        std::string id = entity.getId();
+        string id = entity.getId();
 
         if (buckets.find(id) == buckets.end()) {
             buckets.emplace(id, TokensBucket(10)); // capacity 10 tokens for demo
@@ -157,19 +158,19 @@ class FixedWindowRateLimiter : public IRateLimiter {
         long long windowStart; // ms
         int count;
     };
-    std::unordered_map<std::string, Window> windows;
+    unordered_map<string, Window> windows;
 
     const int maxRequests = 10;
     const int windowSizeMillis = 5000;
 
     long long nowMillis() const {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::steady_clock::now().time_since_epoch()).count();
+        return chrono::duration_cast<chrono::milliseconds>(
+            chrono::steady_clock::now().time_since_epoch()).count();
     }
 
 public:
     bool isRequestAllowed(const IRateLimitingEntity& entity) override {
-        std::string id = entity.getId();
+        string id = entity.getId();
         long long now = nowMillis();
 
         auto it = windows.find(id);
@@ -193,32 +194,32 @@ int main() {
     User user("user123");
     API api("getPosts");
 
-    std::unique_ptr<IRateLimiter> tokenBucketLimiter = std::make_unique<TokenBucketRateLimiter>();
-    std::unique_ptr<IRateLimiter> fixedWindowLimiter = std::make_unique<FixedWindowRateLimiter>();
+    unique_ptr<IRateLimiter> tokenBucketLimiter = make_unique<TokenBucketRateLimiter>();
+    unique_ptr<IRateLimiter> fixedWindowLimiter = make_unique<FixedWindowRateLimiter>();
 
-    std::cout << "Using Token Bucket Rate Limiter\n";
+    cout << "Using Token Bucket Rate Limiter\n";
     for (int i = 1; i <= 15; ++i) {
         bool allowedUser = tokenBucketLimiter->isRequestAllowed(user);
         bool allowedApi = tokenBucketLimiter->isRequestAllowed(api);
-        std::cout << "User request #" << i << " allowed: " << (allowedUser ? "Yes" : "No") << ", "
+        cout << "User request #" << i << " allowed: " << (allowedUser ? "Yes" : "No") << ", "
                   << "API request #" << i << " allowed: " << (allowedApi ? "Yes" : "No") << "\n";
     }
 
-    std::cout << "\nWaiting 6 seconds to allow refill...\n\n";
-    std::this_thread::sleep_for(std::chrono::seconds(6));
+    cout << "\nWaiting 6 seconds to allow refill...\n\n";
+    this_thread::sleep_for(chrono::seconds(6));
 
     for (int i = 1; i <= 7; ++i) {
         bool allowedUser = tokenBucketLimiter->isRequestAllowed(user);
         bool allowedApi = tokenBucketLimiter->isRequestAllowed(api);
-        std::cout << "User request after wait #" << i << " allowed: " << (allowedUser ? "Yes" : "No") << ", "
+        cout << "User request after wait #" << i << " allowed: " << (allowedUser ? "Yes" : "No") << ", "
                   << "API request after wait #" << i << " allowed: " << (allowedApi ? "Yes" : "No") << "\n";
     }
 
-    std::cout << "\nUsing Fixed Window Rate Limiter\n";
+    cout << "\nUsing Fixed Window Rate Limiter\n";
     for (int i = 1; i <= 15; ++i) {
         bool allowedUser = fixedWindowLimiter->isRequestAllowed(user);
         bool allowedApi = fixedWindowLimiter->isRequestAllowed(api);
-        std::cout << "User request #" << i << " allowed: " << (allowedUser ? "Yes" : "No") << ", "
+        cout << "User request #" << i << " allowed: " << (allowedUser ? "Yes" : "No") << ", "
                   << "API request #" << i << " allowed: " << (allowedApi ? "Yes" : "No") << "\n";
     }
 
