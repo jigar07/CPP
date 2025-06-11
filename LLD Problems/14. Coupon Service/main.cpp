@@ -3,43 +3,44 @@
 #include <string>
 #include <ctime>
 #include <algorithm>
+using namespace std;
 
 // ===== DOMAIN ENTITIES =====
 
 class User {
 public:
-    std::string id;
-    User(const std::string& id) : id(id) {}
+    string id;
+    User(const string& id) : id(id) {}
 };
 
 class Seller {
 public:
-    std::string id;
-    Seller(const std::string& id) : id(id) {}
+    string id;
+    Seller(const string& id) : id(id) {}
 };
 
 class Product {
 public:
-    std::string id;
+    string id;
     double price;
     Seller* seller;
-    Product(const std::string& id, double price, Seller* seller) 
+    Product(const string& id, double price, Seller* seller) 
         : id(id), price(price), seller(seller) {}
 };
 
 class TimeRange {
 public:
-    std::time_t start;
-    std::time_t end;
-    TimeRange(std::time_t start, std::time_t end) : start(start), end(end) {}
+    time_t start;
+    time_t end;
+    TimeRange(time_t start, time_t end) : start(start), end(end) {}
 
     bool isLive() const {
-        std::time_t now = std::time(nullptr);
+        time_t now = time(nullptr);
         return now >= start && now <= end;
     }
 
     bool isInPast() const {
-        return std::time(nullptr) > end;
+        return time(nullptr) > end;
     }
 };
 
@@ -57,8 +58,8 @@ enum class CouponApplicableTo {
 class Offer {
 public:
     CouponApplicableTo applicableTo;
-    std::vector<Seller*> applicableSellers;
-    std::vector<Product*> applicableProducts;
+    vector<Seller*> applicableSellers;
+    vector<Product*> applicableProducts;
     OfferType offerType;
     double offerPercent;
     double offerFlat;
@@ -70,12 +71,12 @@ public:
 class Coupon {
 public:
     TimeRange validity;
-    std::string code;
+    string code;
     Offer offer;
     bool isDeleted;
     User* createdBy;
 
-    Coupon(const TimeRange& validity, const std::string& code, const Offer& offer, User* createdBy)
+    Coupon(const TimeRange& validity, const string& code, const Offer& offer, User* createdBy)
         : validity(validity), code(code), offer(offer), isDeleted(false), createdBy(createdBy) {}
 
     bool isActive() const {
@@ -86,7 +87,7 @@ public:
 class Cart {
 public:
     User* user;
-    std::vector<Product*> productList;
+    vector<Product*> productList;
 
     Cart(User* user) : user(user) {}
 
@@ -136,7 +137,7 @@ public:
 
     bool apply(const Coupon& coupon, const Cart& cart) const override {
         for (Product* product : cart.productList) {
-            if (std::find(coupon.offer.applicableSellers.begin(),
+            if (find(coupon.offer.applicableSellers.begin(),
                           coupon.offer.applicableSellers.end(),
                           product->seller) == coupon.offer.applicableSellers.end()) {
                 return false;
@@ -154,7 +155,7 @@ public:
 
     bool apply(const Coupon& coupon, const Cart& cart) const override {
         for (Product* product : cart.productList) {
-            if (std::find(coupon.offer.applicableProducts.begin(),
+            if (find(coupon.offer.applicableProducts.begin(),
                           coupon.offer.applicableProducts.end(),
                           product) == coupon.offer.applicableProducts.end()) {
                 return false;
@@ -192,8 +193,8 @@ public:
 
 class CouponService {
 private:
-    std::vector<ICouponMatchRule*> matchRules;
-    std::vector<ICouponRewardRule*> rewardRules;
+    vector<ICouponMatchRule*> matchRules;
+    vector<ICouponRewardRule*> rewardRules;
 
 public:
     void addMatchRule(ICouponMatchRule* rule) {
@@ -206,12 +207,12 @@ public:
 
     double applyCoupon(Cart& cart, const Coupon& coupon) {
         if (!coupon.isActive()) {
-            throw std::runtime_error("Invalid or expired coupon.");
+            throw runtime_error("Invalid or expired coupon.");
         }
 
         for (auto& rule : matchRules) {
             if (rule->isApplicable(coupon, cart) && !rule->apply(coupon, cart)) {
-                throw std::runtime_error("Coupon not applicable.");
+                throw runtime_error("Coupon not applicable.");
             }
         }
 
@@ -240,7 +241,7 @@ int main() {
         cart.productList.push_back(&p1);
         cart.productList.push_back(&p2);
 
-        TimeRange valid(std::time(nullptr) - 1000, std::time(nullptr) + 10000);
+        TimeRange valid(time(nullptr) - 1000, time(nullptr) + 10000);
         Offer offer(CouponApplicableTo::SELLER, OfferType::PERCENT_DISCOUNT, 10.0);
         offer.applicableSellers.push_back(&seller);
 
@@ -256,10 +257,10 @@ int main() {
 
         // Apply
         double discountedPrice = service.applyCoupon(cart, coupon);
-        std::cout <<"Original price: "<<cart.getTotalPrice()<< ", Discounted price: " << discountedPrice << std::endl;
+        cout <<"Original price: "<<cart.getTotalPrice()<< ", Discounted price: " << discountedPrice << endl;
 
-    } catch (std::exception& ex) {
-        std::cerr << "Exception: " << ex.what() << std::endl;
+    } catch (exception& ex) {
+        cerr << "Exception: " << ex.what() << endl;
     }
 
     return 0;
