@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <chrono>
 #include <thread>
+using namespace std;
 
 // Forward declarations
 class TokensBucket;
@@ -11,7 +12,7 @@ class TokensBucket;
 // Interface for refill rule
 class IRefillRule {
 public:
-    virtual void refillBucket(TokensBucket& bucket, const std::string& entityId) = 0;
+    virtual void refillBucket(TokensBucket& bucket, const string& entityId) = 0;
     virtual ~IRefillRule() = default;
 };
 
@@ -33,7 +34,7 @@ public:
     }
 
     void refill(int count) {
-        tokens = std::min(capacity, tokens + count);
+        tokens = min(capacity, tokens + count);
     }
 };
 
@@ -41,18 +42,18 @@ public:
 class ConstantRateRefillRule : public IRefillRule {
     int tokensToAdd;
     int windowMillis;
-    std::unordered_map<std::string, long long> lastRefillMap;
+    unordered_map<string, long long> lastRefillMap;
 
     long long nowMillis() const {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::steady_clock::now().time_since_epoch()).count();
+        return chrono::duration_cast<chrono::milliseconds>(
+            chrono::steady_clock::now().time_since_epoch()).count();
     }
 
 public:
     ConstantRateRefillRule(int tokensToAdd_, int windowMillis_)
         : tokensToAdd(tokensToAdd_), windowMillis(windowMillis_) {}
 
-    void refillBucket(TokensBucket& bucket, const std::string& entityId) override {
+    void refillBucket(TokensBucket& bucket, const string& entityId) override {
         long long now = nowMillis();
 
         auto it = lastRefillMap.find(entityId);
@@ -72,47 +73,47 @@ public:
 // Interface for entities subject to rate limiting
 class IRateLimitingEntity {
 public:
-    virtual std::string getId() const = 0;
-    virtual std::shared_ptr<IRefillRule> getRefillRule() const = 0;
+    virtual string getId() const = 0;
+    virtual shared_ptr<IRefillRule> getRefillRule() const = 0;
     virtual ~IRateLimitingEntity() = default;
 };
 
 // User entity
 class User : public IRateLimitingEntity {
-    std::string userId;
-    std::shared_ptr<IRefillRule> refillRule;
+    string userId;
+    shared_ptr<IRefillRule> refillRule;
 
 public:
-    User(const std::string& id)
+    User(const string& id)
         : userId(id),
-          refillRule(std::make_shared<ConstantRateRefillRule>(5, 5000)) // 5 tokens per 5 seconds
+          refillRule(make_shared<ConstantRateRefillRule>(5, 5000)) // 5 tokens per 5 seconds
     {}
 
-    std::string getId() const override {
+    string getId() const override {
         return userId;
     }
 
-    std::shared_ptr<IRefillRule> getRefillRule() const override {
+    shared_ptr<IRefillRule> getRefillRule() const override {
         return refillRule;
     }
 };
 
 // API entity
 class API : public IRateLimitingEntity {
-    std::string apiName;
-    std::shared_ptr<IRefillRule> refillRule;
+    string apiName;
+    shared_ptr<IRefillRule> refillRule;
 
 public:
-    API(const std::string& name)
+    API(const string& name)
         : apiName(name),
-          refillRule(std::make_shared<ConstantRateRefillRule>(3, 3000)) // 3 tokens per 3 seconds
+          refillRule(make_shared<ConstantRateRefillRule>(3, 3000)) // 3 tokens per 3 seconds
     {}
 
-    std::string getId() const override {
+    string getId() const override {
         return apiName;
     }
 
-    std::shared_ptr<IRefillRule> getRefillRule() const override {
+    shared_ptr<IRefillRule> getRefillRule() const override {
         return refillRule;
     }
 };
@@ -120,11 +121,11 @@ public:
 // Token bucket rate limiter
 class TokenBucketRateLimiter {
     // Map entity ID to token bucket
-    std::unordered_map<std::string, TokensBucket> buckets;
+    unordered_map<string, TokensBucket> buckets;
 
 public:
     bool isRequestAllowed(const IRateLimitingEntity& entity) {
-        std::string id = entity.getId();
+        string id = entity.getId();
 
         // If no bucket exists yet, create one with capacity = tokensToAdd (here 10 for demo)
         if (buckets.find(id) == buckets.end()) {
@@ -154,32 +155,32 @@ int main() {
     // Simulate rapid requests from user
     for (int i = 1; i <= 15; ++i) {
         bool allowed = limiter.isRequestAllowed(user);
-        std::cout << "User request #" << i << " allowed: " << (allowed ? "Yes" : "No") << "\n";
+        cout << "User request #" << i << " allowed: " << (allowed ? "Yes" : "No") << "\n";
     }
 
     // Simulate rapid API requests
     for (int i = 1; i <= 15; ++i) {
         bool allowed = limiter.isRequestAllowed(api);
-        std::cout << "API request #" << i << " allowed: " << (allowed ? "Yes" : "No") << "\n";
+        cout << "API request #" << i << " allowed: " << (allowed ? "Yes" : "No") << "\n";
     }
 
     // Wait 3 seconds to allow refill for user
-    std::cout << "Waiting 3 seconds...\n";
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    cout << "Waiting 3 seconds...\n";
+    this_thread::sleep_for(chrono::seconds(3));
 
     for (int i = 1; i <= 7; ++i)
-        std::cout << "User request after wait allowed: " << (limiter.isRequestAllowed(user) ? "Yes" : "No") << "\n";
+        cout << "User request after wait allowed: " << (limiter.isRequestAllowed(user) ? "Yes" : "No") << "\n";
     for (int i = 1; i <= 7; ++i)
-        std::cout << "API request after wait allowed: " << (limiter.isRequestAllowed(api) ? "Yes" : "No") << "\n";
+        cout << "API request after wait allowed: " << (limiter.isRequestAllowed(api) ? "Yes" : "No") << "\n";
 
     // Wait 3 seconds to allow refill for user
-    std::cout << "Waiting 3 seconds...\n";
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    cout << "Waiting 3 seconds...\n";
+    this_thread::sleep_for(chrono::seconds(3));
 
     for (int i = 1; i <= 7; ++i)
-        std::cout << "User request after wait allowed: " << (limiter.isRequestAllowed(user) ? "Yes" : "No") << "\n";
+        cout << "User request after wait allowed: " << (limiter.isRequestAllowed(user) ? "Yes" : "No") << "\n";
     for (int i = 1; i <= 7; ++i)
-        std::cout << "API request after wait allowed: " << (limiter.isRequestAllowed(api) ? "Yes" : "No") << "\n";
+        cout << "API request after wait allowed: " << (limiter.isRequestAllowed(api) ? "Yes" : "No") << "\n";
 
     return 0;
 }

@@ -4,13 +4,14 @@
 #include <memory>
 #include <algorithm>
 #include <limits>
+using namespace std;
 
 // --- Product Definition ---
 struct Product {
-    std::string id;
-    std::string name;
+    string id;
+    string name;
     double price;
-    std::string category;
+    string category;
 };
 
 // --- Interface for all filtering criteria ---
@@ -23,10 +24,10 @@ public:
 // --- Leaf Filters ---
 
 class CategoryFilteringCriteria : public IFilteringCriteria {
-    std::string categoryToMatch;
+    string categoryToMatch;
 public:
-    explicit CategoryFilteringCriteria(std::string category) 
-        : categoryToMatch(std::move(category)) {}
+    explicit CategoryFilteringCriteria(string category) 
+        : categoryToMatch(move(category)) {}
 
     bool doesProductMatch(const Product& product) const override {
         return product.category == categoryToMatch;
@@ -48,11 +49,11 @@ public:
 // --- Compound Filters ---
 
 class AndFilteringCriteria : public IFilteringCriteria {
-    std::shared_ptr<IFilteringCriteria> left;
-    std::shared_ptr<IFilteringCriteria> right;
+    shared_ptr<IFilteringCriteria> left;
+    shared_ptr<IFilteringCriteria> right;
 public:
-    AndFilteringCriteria(std::shared_ptr<IFilteringCriteria> l, std::shared_ptr<IFilteringCriteria> r)
-        : left(std::move(l)), right(std::move(r)) {}
+    AndFilteringCriteria(shared_ptr<IFilteringCriteria> l, shared_ptr<IFilteringCriteria> r)
+        : left(move(l)), right(move(r)) {}
 
     bool doesProductMatch(const Product& product) const override {
         return left->doesProductMatch(product) && right->doesProductMatch(product);
@@ -60,11 +61,11 @@ public:
 };
 
 class OrFilteringCriteria : public IFilteringCriteria {
-    std::shared_ptr<IFilteringCriteria> left;
-    std::shared_ptr<IFilteringCriteria> right;
+    shared_ptr<IFilteringCriteria> left;
+    shared_ptr<IFilteringCriteria> right;
 public:
-    OrFilteringCriteria(std::shared_ptr<IFilteringCriteria> l, std::shared_ptr<IFilteringCriteria> r)
-        : left(std::move(l)), right(std::move(r)) {}
+    OrFilteringCriteria(shared_ptr<IFilteringCriteria> l, shared_ptr<IFilteringCriteria> r)
+        : left(move(l)), right(move(r)) {}
 
     bool doesProductMatch(const Product& product) const override {
         return left->doesProductMatch(product) || right->doesProductMatch(product);
@@ -72,10 +73,10 @@ public:
 };
 
 class NotFilteringCriteria : public IFilteringCriteria {
-    std::shared_ptr<IFilteringCriteria> operand;
+    shared_ptr<IFilteringCriteria> operand;
 public:
-    explicit NotFilteringCriteria(std::shared_ptr<IFilteringCriteria> op)
-        : operand(std::move(op)) {}
+    explicit NotFilteringCriteria(shared_ptr<IFilteringCriteria> op)
+        : operand(move(op)) {}
 
     bool doesProductMatch(const Product& product) const override {
         return !operand->doesProductMatch(product);
@@ -83,11 +84,11 @@ public:
 };
 
 // --- Helper function to filter a list of products ---
-std::vector<Product> filterProducts(
-    const std::vector<Product>& products,
+vector<Product> filterProducts(
+    const vector<Product>& products,
     const IFilteringCriteria& criteria)
 {
-    std::vector<Product> result;
+    vector<Product> result;
     for (const auto& p : products) {
         if (criteria.doesProductMatch(p)) {
             result.push_back(p);
@@ -98,7 +99,7 @@ std::vector<Product> filterProducts(
 
 // --- Example Usage ---
 int main() {
-    std::vector<Product> products = {
+    vector<Product> products = {
         {"1", "iPhone", 999.0, "phone"},
         {"2", "Galaxy", 899.0, "phone"},
         {"3", "MacBook", 1999.0, "laptop"},
@@ -108,23 +109,23 @@ int main() {
     };
 
     // Create some leaf criteria
-    auto priceBetween50And1000 = std::make_shared<PriceFilteringCriteria>(50, 1000);
-    auto categoryPhone = std::make_shared<CategoryFilteringCriteria>("phone");
+    auto priceBetween50And1000 = make_shared<PriceFilteringCriteria>(50, 1000);
+    auto categoryPhone = make_shared<CategoryFilteringCriteria>("phone");
 
     // Compose: (priceBetween50And1000 AND categoryPhone)
-    auto priceAndCategory = std::make_shared<AndFilteringCriteria>(priceBetween50And1000, categoryPhone);
+    auto priceAndCategory = make_shared<AndFilteringCriteria>(priceBetween50And1000, categoryPhone);
 
     // Compose: NOT (categoryPhone)
-    auto notPhone = std::make_shared<NotFilteringCriteria>(categoryPhone);
+    auto notPhone = make_shared<NotFilteringCriteria>(categoryPhone);
 
     // Compose: (priceBetween50And1000 AND categoryPhone) OR NOT (categoryPhone)
     auto complexFilter = OrFilteringCriteria(priceAndCategory, notPhone);
 
     auto filtered = filterProducts(products, complexFilter);
 
-    std::cout << "Filtered products:\n";
+    cout << "Filtered products:\n";
     for (const auto& p : filtered) {
-        std::cout << "  " << p.name << " (" << p.category << "), price: " << p.price << "\n";
+        cout << "  " << p.name << " (" << p.category << "), price: " << p.price << "\n";
     }
 
     return 0;

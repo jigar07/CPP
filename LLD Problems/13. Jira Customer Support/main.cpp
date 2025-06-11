@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <optional>
 #include <memory>
+using namespace std;
 
 // Enums
 enum class TicketDomain { PAYMENT, MUTUAL_FUND, GOLD, INSURANCE, USER_REGISTRATION };
@@ -15,11 +16,11 @@ enum class TicketStatus { CREATED, IN_PROGRESS, COMPLETED };
 // Models
 class Agent {
 public:
-    std::string id;
-    std::string name;
-    std::vector<TicketDomain> domains;
+    string id;
+    string name;
+    vector<TicketDomain> domains;
     bool isOOO;
-    std::string email;
+    string email;
 
     // STL containers like unordered_map require that the value type either:
     // Be default-constructible (i.e. has a no-argument constructor), or
@@ -29,25 +30,25 @@ public:
 
     Agent() = default;
 
-    Agent(std::string id, std::string name, std::vector<TicketDomain> domains, bool isOOO, std::string email)
-        : id(std::move(id)), name(std::move(name)), domains(std::move(domains)), isOOO(isOOO), email(std::move(email)) {}
+    Agent(string id, string name, vector<TicketDomain> domains, bool isOOO, string email)
+        : id(move(id)), name(move(name)), domains(move(domains)), isOOO(isOOO), email(move(email)) {}
 };
 
 class Customer {
 public:
-    std::string id;
-    explicit Customer(std::string id) : id(std::move(id)) {}
+    string id;
+    explicit Customer(string id) : id(move(id)) {}
 };
 
 class Ticket {
 public:
-    std::string id;
-    std::string details;
-    std::string title;
-    std::vector<std::string> linkedReferenceIds;
+    string id;
+    string details;
+    string title;
+    vector<string> linkedReferenceIds;
     TicketDomain domain;
     TicketStatus status;
-    std::time_t resolvedAt;
+    time_t resolvedAt;
 
     // STL containers like unordered_map require that the value type either:
     // Be default-constructible (i.e. has a no-argument constructor), or
@@ -56,10 +57,10 @@ public:
 
     Ticket() = default;
 
-    Ticket(std::string id, std::string details, std::string title, std::vector<std::string> linkedReferenceIds,
+    Ticket(string id, string details, string title, vector<string> linkedReferenceIds,
            TicketDomain domain, TicketStatus status)
-        : id(std::move(id)), details(std::move(details)), title(std::move(title)),
-          linkedReferenceIds(std::move(linkedReferenceIds)), domain(domain), status(status), resolvedAt(0) {}
+        : id(move(id)), details(move(details)), title(move(title)),
+          linkedReferenceIds(move(linkedReferenceIds)), domain(domain), status(status), resolvedAt(0) {}
 };
 
 // Interfaces
@@ -67,25 +68,25 @@ class ITicketRepository {
 public:
     virtual ~ITicketRepository() = default;
     virtual Ticket save(const Ticket& ticket) = 0;
-    virtual Ticket get(const std::string& ticketId) = 0;
+    virtual Ticket get(const string& ticketId) = 0;
     virtual void saveTicketAgent(const Ticket& ticket, const Agent& agent) = 0;
-    virtual std::optional<Ticket> getTicketForAgent(const Agent& agent) = 0;
+    virtual optional<Ticket> getTicketForAgent(const Agent& agent) = 0;
     virtual void markResolved(Ticket& ticket) = 0;
-    virtual std::optional<Agent> getAgentForTicket(const Ticket& ticket) = 0;
+    virtual optional<Agent> getAgentForTicket(const Ticket& ticket) = 0;
 };
 
 class IAgentRepository {
 public:
     virtual ~IAgentRepository() = default;
-    virtual std::vector<Agent> getAllAgents() = 0;
+    virtual vector<Agent> getAllAgents() = 0;
 };
 
 // In-memory implementation
 class InMemoryTicketRepository : public ITicketRepository {
 private:
-    std::unordered_map<std::string, Ticket> tickets;
-    std::unordered_map<std::string, Agent> ticketToAgent;
-    std::unordered_map<std::string, std::string> agentToTicket;
+    unordered_map<string, Ticket> tickets;
+    unordered_map<string, Agent> ticketToAgent;
+    unordered_map<string, string> agentToTicket;
 
 public:
     Ticket save(const Ticket& ticket) override {
@@ -93,7 +94,7 @@ public:
         return ticket;
     }
 
-    Ticket get(const std::string& ticketId) override {
+    Ticket get(const string& ticketId) override {
         return tickets.at(ticketId);
     }
 
@@ -102,39 +103,39 @@ public:
         agentToTicket[agent.id] = ticket.id;
     }
 
-    std::optional<Ticket> getTicketForAgent(const Agent& agent) override {
+    optional<Ticket> getTicketForAgent(const Agent& agent) override {
         if (agentToTicket.find(agent.id) != agentToTicket.end()) {
-            std::string ticketId = agentToTicket[agent.id];
+            string ticketId = agentToTicket[agent.id];
             return tickets[ticketId];
         }
-        return std::nullopt;
+        return nullopt;
     }
 
     void markResolved(Ticket& ticket) override {
-        ticket.resolvedAt = std::time(nullptr);
+        ticket.resolvedAt = time(nullptr);
         tickets[ticket.id] = ticket;
     }
 
-    std::optional<Agent> getAgentForTicket(const Ticket& ticket) override {
+    optional<Agent> getAgentForTicket(const Ticket& ticket) override {
         if (ticketToAgent.find(ticket.id) != ticketToAgent.end()) {
             return ticketToAgent[ticket.id];
         }
-        return std::nullopt;
+        return nullopt;
     }
 };
 
 class InMemoryAgentRepository : public IAgentRepository {
 private:
-    std::vector<Agent> agents;
+    vector<Agent> agents;
 
 public:
     InMemoryAgentRepository() {
-        agents.emplace_back("1", "Alice", std::vector<TicketDomain>{TicketDomain::PAYMENT}, false, "alice@example.com");
-        agents.emplace_back("2", "Bob", std::vector<TicketDomain>{TicketDomain::MUTUAL_FUND, TicketDomain::PAYMENT}, true, "bob@example.com");
-        agents.emplace_back("3", "Charlie", std::vector<TicketDomain>{TicketDomain::PAYMENT}, false, "charlie@example.com");
+        agents.emplace_back("1", "Alice", vector<TicketDomain>{TicketDomain::PAYMENT}, false, "alice@example.com");
+        agents.emplace_back("2", "Bob", vector<TicketDomain>{TicketDomain::MUTUAL_FUND, TicketDomain::PAYMENT}, true, "bob@example.com");
+        agents.emplace_back("3", "Charlie", vector<TicketDomain>{TicketDomain::PAYMENT}, false, "charlie@example.com");
     }
 
-    std::vector<Agent> getAllAgents() override {
+    vector<Agent> getAllAgents() override {
         return agents;
     }
 };
@@ -143,17 +144,17 @@ public:
 class IPreferenceStrategy {
 public:
     virtual ~IPreferenceStrategy() = default;
-    virtual bool canSupport(const std::string& strategy) = 0;
-    virtual Agent accept(const std::vector<Agent>& agents) = 0;
+    virtual bool canSupport(const string& strategy) = 0;
+    virtual Agent accept(const vector<Agent>& agents) = 0;
 };
 
 class RandomPreferenceStrategy : public IPreferenceStrategy {
 public:
-    bool canSupport(const std::string& strategy) override {
+    bool canSupport(const string& strategy) override {
         return strategy == "random";
     }
 
-    Agent accept(const std::vector<Agent>& agents) override {
+    Agent accept(const vector<Agent>& agents) override {
         int randIndex = rand() % agents.size();
         return agents[randIndex];
     }
@@ -167,12 +168,12 @@ private:
 public:
     explicit AgentService(IAgentRepository& repo) : agentRepository(repo) {}
 
-    std::vector<Agent> getAllAgents() {
+    vector<Agent> getAllAgents() {
         return agentRepository.getAllAgents();
     }
 
     void addWorkLog(const Ticket& ticket, const Agent& agent) {
-        std::cout << "Work log added for Agent: " << agent.name << " on Ticket ID: " << ticket.id << std::endl;
+        cout << "Work log added for Agent: " << agent.name << " on Ticket ID: " << ticket.id << endl;
     }
 };
 
@@ -180,15 +181,15 @@ class TicketService {
 private:
     ITicketRepository& ticketRepo;
     AgentService& agentService;
-    std::vector<std::shared_ptr<IPreferenceStrategy>> preferenceStrategies;
+    vector<shared_ptr<IPreferenceStrategy>> preferenceStrategies;
 
 public:
     TicketService(ITicketRepository& ticketRepo, AgentService& agentService,
-                  std::vector<std::shared_ptr<IPreferenceStrategy>> strategies)
-        : ticketRepo(ticketRepo), agentService(agentService), preferenceStrategies(std::move(strategies)) {}
+                  vector<shared_ptr<IPreferenceStrategy>> strategies)
+        : ticketRepo(ticketRepo), agentService(agentService), preferenceStrategies(move(strategies)) {}
 
     Ticket createTicket(Ticket ticket) {
-        ticket.id = std::to_string(rand());
+        ticket.id = to_string(rand());
         return ticketRepo.save(ticket);
     }
 
@@ -201,13 +202,13 @@ public:
         return ticket;
     }
 
-    Agent assignTicket(const std::string& ticketId, const std::string& strategy) {
+    Agent assignTicket(const string& ticketId, const string& strategy) {
         Ticket ticket = ticketRepo.get(ticketId);
         auto allAgents = agentService.getAllAgents();
-        std::vector<Agent> eligibleAgents;
+        vector<Agent> eligibleAgents;
 
         for (const auto& agent : allAgents) {
-            bool supportsDomain = std::find(agent.domains.begin(), agent.domains.end(), ticket.domain) != agent.domains.end();
+            bool supportsDomain = find(agent.domains.begin(), agent.domains.end(), ticket.domain) != agent.domains.end();
             bool notOOO = !agent.isOOO;
             bool hasTicket = ticketRepo.getTicketForAgent(agent).has_value();
             if (supportsDomain && notOOO && !hasTicket) {
@@ -223,7 +224,7 @@ public:
             }
         }
 
-        throw std::runtime_error("No suitable strategy found or no eligible agents.");
+        throw runtime_error("No suitable strategy found or no eligible agents.");
     }
 };
 
@@ -235,26 +236,26 @@ int main() {
     InMemoryTicketRepository ticketRepo;
     AgentService agentService(agentRepo);
 
-    auto randomStrategy = std::make_shared<RandomPreferenceStrategy>();
-    std::vector<std::shared_ptr<IPreferenceStrategy>> strategies = {randomStrategy};
+    auto randomStrategy = make_shared<RandomPreferenceStrategy>();
+    vector<shared_ptr<IPreferenceStrategy>> strategies = {randomStrategy};
 
     TicketService ticketService(ticketRepo, agentService, strategies);
 
     // Create ticket
     Ticket ticket("", "Fix payment issue", "Payment Failed", {}, TicketDomain::PAYMENT, TicketStatus::CREATED);
     Ticket createdTicket = ticketService.createTicket(ticket);
-    std::cout << "Ticket created with ID: " << createdTicket.id << std::endl;
+    cout << "Ticket created with ID: " << createdTicket.id << endl;
 
     // Assign agent
     try {
         Agent assigned = ticketService.assignTicket(createdTicket.id, "random");
-        std::cout << "Assigned agent: " << assigned.name << std::endl;
+        cout << "Assigned agent: " << assigned.name << endl;
 
         // Resolve ticket
         ticketService.resolveTicket(createdTicket);
-        std::cout << "Ticket resolved." << std::endl;
-    } catch (const std::exception& ex) {
-        std::cerr << "Error assigning ticket: " << ex.what() << std::endl;
+        cout << "Ticket resolved." << endl;
+    } catch (const exception& ex) {
+        cerr << "Error assigning ticket: " << ex.what() << endl;
     }
 
     return 0;

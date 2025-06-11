@@ -60,7 +60,7 @@ public:
                 return a.first.score > b.first.score;
             });
 
-            stats.orderedPlayer = std::move(values);
+            stats.orderedPlayer = move(values);
         }
     }
 };

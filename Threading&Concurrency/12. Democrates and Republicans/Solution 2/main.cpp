@@ -4,6 +4,7 @@
 #include "BDRV2.h"
 #include "BDRDemocratWorker.h"
 #include "BDRRepublicanWorker.h"
+using namespace std;
 
 int main() {
     State state;
@@ -11,19 +12,19 @@ int main() {
 
     // Worker threads
     for (int i = 0; i < 3; ++i) {
-        std::thread(BDRDemocratWorker, &state).detach();
-        std::thread(BDRRepublicanWorker, &state).detach();
+        thread(BDRDemocratWorker, &state).detach();
+        thread(BDRRepublicanWorker, &state).detach();
     }
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    this_thread::sleep_for(chrono::seconds(1));
 
-    std::thread([&](){ bdrv2.democrat("D1", 5000); }).detach();
-    std::thread([&](){ bdrv2.democrat("D2", 5000); }).detach();
-    std::thread([&](){ bdrv2.republican("R1", 5000); }).detach();
-    std::thread([&](){ bdrv2.democrat("D3", 5000); }).detach();
-    std::thread([&](){ bdrv2.democrat("D4", 5000); }).detach();
+    thread([&](){ bdrv2.democrat("D1", 5000); }).detach();
+    thread([&](){ bdrv2.democrat("D2", 5000); }).detach();
+    thread([&](){ bdrv2.republican("R1", 5000); }).detach();
+    thread([&](){ bdrv2.democrat("D3", 5000); }).detach();
+    thread([&](){ bdrv2.democrat("D4", 5000); }).detach();
 
-    std::this_thread::sleep_for(std::chrono::seconds(30)); // Allow threads to finish
+    this_thread::sleep_for(chrono::seconds(30)); // Allow threads to finish
     {
         state.shutdown = true;
         state.cv.notify_all(); // Wake up all threads

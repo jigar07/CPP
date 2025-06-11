@@ -289,7 +289,7 @@ public:
                 }
 
                 if (!strategy) {
-                    throw std::runtime_error("No split strategy found for expense");
+                    throw runtime_error("No split strategy found for expense");
                 }
 
                 // Calculate split details (how much each participant owes)
@@ -330,7 +330,7 @@ public:
                 }
 
                 if (!strategy) {
-                    throw std::runtime_error("No split strategy found for expense");
+                    throw runtime_error("No split strategy found for expense");
                 }
 
                 // Calculate split details (how much each participant owes)

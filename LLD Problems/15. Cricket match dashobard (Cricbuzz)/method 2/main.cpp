@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <algorithm>
+using namespace std;
 
 // ------------------ Enums ------------------
 enum class BallType { NORMAL, NO_BALL, WIDE, WICKET };
@@ -50,11 +51,11 @@ public:
 // ------------------ Player ------------------
 class Player {
 public:
-    std::string id;
-    std::string teamId;
-    std::vector<Ball> ballsPlayed;
+    string id;
+    string teamId;
+    vector<Ball> ballsPlayed;
 
-    Player(std::string id, std::string teamId) : id(std::move(id)), teamId(std::move(teamId)) {}
+    Player(string id, string teamId) : id(move(id)), teamId(move(teamId)) {}
 
     void play(const Ball& ball) {
         if (ball.type != BallType::NO_BALL && ball.type != BallType::WIDE) {
@@ -71,12 +72,12 @@ public:
     }
 
     int get4s() const {
-        return std::count_if(ballsPlayed.begin(), ballsPlayed.end(),
+        return count_if(ballsPlayed.begin(), ballsPlayed.end(),
             [](const Ball& ball) { return ball.run.is4(); });
     }
 
     int get6s() const {
-        return std::count_if(ballsPlayed.begin(), ballsPlayed.end(),
+        return count_if(ballsPlayed.begin(), ballsPlayed.end(),
             [](const Ball& ball) { return ball.run.is6(); });
     }
 
@@ -92,8 +93,8 @@ public:
 // ------------------ Team ------------------
 class Team {
 public:
-    std::vector<Player*> players;
-    std::vector<Player*> battingOrder;
+    vector<Player*> players;
+    vector<Player*> battingOrder;
 
     int getTotalScore() const {
         int total = 0;
@@ -124,7 +125,7 @@ public:
     Team* team;
 
     void swapStrikingPlayer() {
-        std::swap(strikingPlayer, nonStrikingPlayer);
+        swap(strikingPlayer, nonStrikingPlayer);
     }
 
     void setStrikingPlayer(Player* p) {
@@ -183,9 +184,9 @@ class WicketBasedStrikingPlayerStrategy : public IStrikingPlayerStrategy {
 protected:
     void _updateMatchState(MatchState& state, const Ball& ball) override {
         const auto& order = state.team->battingOrder;
-        auto it = std::find(order.begin(), order.end(), state.strikingPlayer);
+        auto it = find(order.begin(), order.end(), state.strikingPlayer);
         if (it != order.end()) {
-            int index = std::distance(order.begin(), it) + 1;
+            int index = distance(order.begin(), it) + 1;
             while (index < order.size() && order[index] == state.nonStrikingPlayer) {
                 ++index;
             }
@@ -203,15 +204,15 @@ protected:
 // ------------------ ChainStrategy ------------------
 class ChainStrikingPlayerStrategy : public IStrikingPlayerStrategy {
 private:
-    std::unique_ptr<IStrikingPlayerStrategy> self;
-    std::unique_ptr<ChainStrikingPlayerStrategy> next;
+    unique_ptr<IStrikingPlayerStrategy> self;
+    unique_ptr<ChainStrikingPlayerStrategy> next;
 
 public:
-    ChainStrikingPlayerStrategy(std::unique_ptr<IStrikingPlayerStrategy> s)
-        : self(std::move(s)) {}
+    ChainStrikingPlayerStrategy(unique_ptr<IStrikingPlayerStrategy> s)
+        : self(move(s)) {}
 
-    void setNext(std::unique_ptr<ChainStrikingPlayerStrategy> nextChain) {
-        next = std::move(nextChain);
+    void setNext(unique_ptr<ChainStrikingPlayerStrategy> nextChain) {
+        next = move(nextChain);
     }
 
 protected:
@@ -238,15 +239,15 @@ public:
 
     void printScore(const Team& team) const {
         for (const auto* player : team.players) {
-            std::cout << player->id << " "
+            cout << player->id << " "
                       << player->getTotalRuns() << " "
                       << player->get4s() << " "
                       << player->get6s() << " "
                       << player->getTotalBalls() << "\n";
         }
 
-        std::cout << "Total: " << team.getTotalScore() << "/" << team.getTotalWickets() << "\n";
-        std::cout << "Overs: " << team.getTotalOversPlayed() << "\n";
+        cout << "Total: " << team.getTotalScore() << "/" << team.getTotalWickets() << "\n";
+        cout << "Overs: " << team.getTotalOversPlayed() << "\n";
     }
 };
 
@@ -255,24 +256,24 @@ class MatchService {
 private:
     MatchState state;
     MatchScoreService scoreService;
-    std::unique_ptr<ChainStrikingPlayerStrategy> chain;
+    unique_ptr<ChainStrikingPlayerStrategy> chain;
 
 public:
-    explicit MatchService(MatchState s) : state(std::move(s)) {}
+    explicit MatchService(MatchState s) : state(move(s)) {}
 
     void setupStrategies() {
-        auto run = std::make_unique<RunBasedStrikingPlayerStrategy>();
-        auto wicket = std::make_unique<WicketBasedStrikingPlayerStrategy>();
-        auto over = std::make_unique<OverChangeStrikingPlayerStrategy>();
+        auto run = make_unique<RunBasedStrikingPlayerStrategy>();
+        auto wicket = make_unique<WicketBasedStrikingPlayerStrategy>();
+        auto over = make_unique<OverChangeStrikingPlayerStrategy>();
 
-        auto chain1 = std::make_unique<ChainStrikingPlayerStrategy>(std::move(run));
-        auto chain2 = std::make_unique<ChainStrikingPlayerStrategy>(std::move(wicket));
-        auto chain3 = std::make_unique<ChainStrikingPlayerStrategy>(std::move(over));
+        auto chain1 = make_unique<ChainStrikingPlayerStrategy>(move(run));
+        auto chain2 = make_unique<ChainStrikingPlayerStrategy>(move(wicket));
+        auto chain3 = make_unique<ChainStrikingPlayerStrategy>(move(over));
 
-        chain2->setNext(std::move(chain3));
-        chain1->setNext(std::move(chain2));
+        chain2->setNext(move(chain3));
+        chain1->setNext(move(chain2));
 
-        chain = std::move(chain1);
+        chain = move(chain1);
     }
 
     void handleThrowBall(const Ball& ball) {

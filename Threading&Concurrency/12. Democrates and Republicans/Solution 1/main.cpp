@@ -4,6 +4,7 @@
 #include <condition_variable>
 #include <chrono>
 #include <vector>
+using namespace std;
 
 enum class Party { D, R, NONE };
 
@@ -18,17 +19,17 @@ struct Bathroom {
 class BathroomDemocratRepublican {
 private:
     Bathroom& bathroom;
-    std::mutex mtx;
-    std::condition_variable cv;
+    mutex mtx;
+    condition_variable cv;
 
 public:
     BathroomDemocratRepublican(Bathroom& b) : bathroom(b) {}
 
-    void democrat(const std::string& name, long millis) {
-        std::cout << name << " came\n";
+    void democrat(const string& name, long millis) {
+        cout << name << " came\n";
 
         {
-            std::unique_lock<std::mutex> lock(mtx);
+            unique_lock<mutex> lock(mtx);
             cv.wait(lock, [&]() {
                 // bathroom.currentParty == Party::D doesn't work because what if Party::NONE.
                 return (bathroom.currentParty != Party::R && bathroom.currentOccupants < bathroom.maxOccupantsAllowed);
@@ -36,45 +37,45 @@ public:
 
             bathroom.currentParty = Party::D;
             bathroom.currentOccupants++;
-            std::cout << name << " using the bathroom\n";
+            cout << name << " using the bathroom\n";
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(millis));
+        this_thread::sleep_for(chrono::milliseconds(millis));
 
         {
-            std::unique_lock<std::mutex> lock(mtx);
+            unique_lock<mutex> lock(mtx);
             bathroom.currentOccupants--;
             if (bathroom.currentOccupants == 0) {
                 bathroom.currentParty = Party::NONE;
             }
-            std::cout << name << " exited the bathroom\n";
+            cout << name << " exited the bathroom\n";
             cv.notify_all();
         }
     }
 
-    void republican(const std::string& name, long millis) {
-        std::cout << name << " came\n";
+    void republican(const string& name, long millis) {
+        cout << name << " came\n";
 
         {
-            std::unique_lock<std::mutex> lock(mtx);
+            unique_lock<mutex> lock(mtx);
             cv.wait(lock, [&]() {
                 return (bathroom.currentParty != Party::D && bathroom.currentOccupants < bathroom.maxOccupantsAllowed);
             });
 
             bathroom.currentParty = Party::R;
             bathroom.currentOccupants++;
-            std::cout << name << " using the bathroom\n";
+            cout << name << " using the bathroom\n";
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(millis));
+        this_thread::sleep_for(chrono::milliseconds(millis));
 
         {
-            std::unique_lock<std::mutex> lock(mtx);
+            unique_lock<mutex> lock(mtx);
             bathroom.currentOccupants--;
             if (bathroom.currentOccupants == 0) {
                 bathroom.currentParty = Party::NONE;
             }
-            std::cout << name << " exited the bathroom\n";
+            cout << name << " exited the bathroom\n";
             cv.notify_all();
         }
     }
@@ -84,7 +85,7 @@ int main() {
     Bathroom bathroom(3);
     BathroomDemocratRepublican bdr(bathroom);
 
-    std::vector<std::thread> threads;
+    vector<thread> threads;
 
     threads.emplace_back(&BathroomDemocratRepublican::democrat, &bdr, "D1", 5000);
     threads.emplace_back(&BathroomDemocratRepublican::democrat, &bdr, "D2", 5000);
