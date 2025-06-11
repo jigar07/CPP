@@ -1,0 +1,13 @@
+# Thought process
+- Game
+  - It has players
+  - Board
+    - Board has cells
+    - Board has snakes and ladders
+    - snakes and ladders has start and end cells
+  - Next player is choose based on currentPlayer index. currentPlayer++ is done after every turn
+    - We can add strategy to choose next player. for ex. skip if bite by snake
+  - Player's initial position is fixed. But we can also advance players if they are pro.
+    - So, for this also can add strategy
+  - At present winning strategy is if position > 100
+    - But we can also add winning strategy based on some other. So, for that also strategy pattern can be used
