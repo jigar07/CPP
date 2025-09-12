@@ -1,6 +1,8 @@
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
 #include <mutex>
 #include <condition_variable>
+#include <thread>
+#include <iostream>
 
 using namespace std;
 # define MAX_NUMBER 20
