@@ -2,6 +2,29 @@
     "tasks": [
         {
             "type": "cppbuild",
+            "label": "Build11 with clang++ (C++20 + libc++)",
+            "command": "clang++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-std=c++20",
+                "-stdlib=libc++",
+                "-g",
+                "*.cpp",
+                "-o",
+                "${fileBasenameNoExtension}.out"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": ["$gcc"],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Build using clang++ with C++20 and libc++"
+        },
+        {
+            "type": "cppbuild",
             "label": "C/C++: g++ build active file",
             "command": "/usr/bin/g++",
             "args": [
@@ -24,7 +47,7 @@
         {
             "type": "shell",
             "label": "C/C++: Run the compiled file",
-            "command": "${fileDirname}/${fileBasenameNoExtension}.out",
+            "command": "./${fileBasenameNoExtension}.out",
             "args": [],
             "options": {
                 "cwd": "${fileDirname}"

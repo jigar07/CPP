@@ -1,3 +1,4 @@
 *.out
 Info.plist
 main.out.yml
+*.dSYM

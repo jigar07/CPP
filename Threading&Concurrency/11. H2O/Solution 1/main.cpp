@@ -1,4 +1,7 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 using namespace std;
 
 struct State {

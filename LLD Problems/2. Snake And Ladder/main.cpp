@@ -16,7 +16,8 @@ play Method of Game(actions):
     next player turn
 */
 
-#include <bits/stdc++.h>
+#include <random>
+#include <iostream>
 
 using namespace std;
 

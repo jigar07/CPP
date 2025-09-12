@@ -1,9 +1,9 @@
-#include <bits/stdc++.h>
 #include <mutex>
 #include <condition_variable>
 #include <unordered_map>
 #include <thread>
 #include <atomic>
+#include <iostream>
 
 using namespace std;
 
@@ -60,7 +60,7 @@ public:
                 return a.first.score > b.first.score;
             });
 
-            stats.orderedPlayer = move(values);
+            stats.orderedPlayer = std::move(values);
         }
     }
 };
