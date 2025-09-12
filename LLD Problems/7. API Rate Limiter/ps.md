@@ -50,8 +50,8 @@ every `time window`, you refill the bucket with that many tokens.
       - **IRateLimitingEntity** - gives the ID(UserId, API, IP address etc) based on which rate limiter would be applied
       - IsRequestAllowed takes IRateLimitingEntity as parameter
 - Token - Not used anywhere, we just created it
-- TokensBucket class
-- IRefillRule created
+- **TokensBucket** class
+- **IRefillRule** created
   - Each entity will give rule for refill
 - In this begining start with simple methods. Then based on requirement make OCP complient
 - If primary allows then use it else use fallback (Fallback is like to get burst traffic functionality)
