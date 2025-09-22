@@ -1,8 +1,11 @@
 // To enforce enqueue-order fairness, you'd need to write a custom queuing scheduler — which is overkill unless you must simulate fairness. Following code does not ensure enqueue-order fairness.
 // I guess with not_full and not_empty it is enqueuing in fairness order. If use while loop then not in faireness
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
 #include <mutex>
+#include <queue>
 #include <condition_variable>
+#include <iostream>
+#include <thread>
 
 using namespace std;
 

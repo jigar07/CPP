@@ -1,8 +1,8 @@
 // With threading
 #include<mutex>
 #include<condition_variable>
-#include<bits/stdc++.h>
 #include<thread>
+#include<iostream>
 
 using namespace std;
 

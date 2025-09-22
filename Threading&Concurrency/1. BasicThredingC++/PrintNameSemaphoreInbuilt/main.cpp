@@ -22,7 +22,6 @@ public:
 private:
     string word;
 
-    
     // counting_semaphore is non-copyable. You should pass the semaphores by reference to the constructor (instead of copying them). This will allow the semaphores to be shared between threads without trying to copy them.
     counting_semaphore<>& mySem;  // Reference to semaphore
     counting_semaphore<>& nextSem; // Reference to semaphore
