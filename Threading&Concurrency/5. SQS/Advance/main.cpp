@@ -49,7 +49,7 @@ private:
     // Retry only failed/unacknowledged messages
     // Detect stuck/crashed consumers
     vector<Message> inFlight;
-    // Messages are pushed to DLQ if all the retrues fails
+    // Messages are pushed to DLQ if all the retries fails
     map<int, Message> deadLetterQueue;
 
     mutex mtx;

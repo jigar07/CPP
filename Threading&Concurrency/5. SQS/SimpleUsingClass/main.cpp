@@ -1,4 +1,10 @@
-#include <bits/stdc++.h>
+#include <queue>
+#include <string>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <atomic>
+#include <iostream>
 using namespace std;
 
 class SQS;

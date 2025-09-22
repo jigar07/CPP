@@ -1,4 +1,8 @@
-#include<bits/stdc++.h>
+#include<mutex>
+#include<vector>
+#include<queue>
+#include<thread>
+#include<iostream>
 using namespace std;
 
 class SQS {

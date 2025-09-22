@@ -170,3 +170,10 @@ g++ main.cpp semaphore.cpp -o main.exe -pthread
   ]
 }
 ```
+# Concepts in c++
+- STL in c++
+- How to create thread in c++
+- lambda function in C++
+- Callback in c++
+- Return/passed as a value, reference, pointer in c++
+- command line input in c++ (cin, istringstream)
