@@ -1,7 +1,7 @@
 - tasks.json is used for build and run
 - launch.json is used for running
 - Build using command line
-  - windows:
+windows:
 ```bash
 g++ main.cpp semaphore.cpp -o main.exe -pthread
 ```
@@ -181,9 +181,17 @@ g++ main.cpp semaphore.cpp -o main.exe -pthread
 - Comparator operator for class, struct, or as a lamda or function for algo
 - Time in c++
 - Threading & Concurrency (Basically thread, state, mutex, condition_variable - [wait(), notify_all(), notify_one(), threadOb.joinable() then threadob.join()], stopFlag - in destructor for shutdown)
-  - 1. BasicThreadingC++
-  - 3. BlockingQueue
-  - 5. SQS
-  - 7. TaskScheduler (3 while loop in consumer)
-  - 8. Dining Philosopher
-  - 9. StockTrading (3 while loop)
+## Threading difficult problems
+- 1. BasicThreadingC++
+- 3. BlockingQueue
+- 5. SQS
+- 7. TaskScheduler (3 while loop in consumer)
+- 8. Dining Philosopher
+- 9. StockTrading (3 while loop)
+## LLD difficult problems
+- 1. Cache-LLD
+- 3. Splitwise
+- 4. JsonNode in Notification
+- 5. Coffee machine
+- 6. Search filter
+- 7. API Rate limiter
