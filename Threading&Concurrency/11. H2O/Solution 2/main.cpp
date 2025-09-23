@@ -1,4 +1,7 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 using namespace std;
 
 struct State {
@@ -71,8 +74,8 @@ int main() {
     while(true) {
         getline(cin, input);
         if(input == "exit") break;
-        if(input == "o") threads.emplace_back([&]() { h2o.releaseOxygen(); });
-        if(input == "h") threads.emplace_back([&]() { h2o.releaseHydroGen(); });
+        if(input == "O") threads.emplace_back([&]() { h2o.releaseOxygen(); });
+        if(input == "H") threads.emplace_back([&]() { h2o.releaseHydroGen(); });
     }
 
     h2o.stop();

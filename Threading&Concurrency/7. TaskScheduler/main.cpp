@@ -1,6 +1,5 @@
 #include "MyScheduler.h"
 #include "AdditionConsumer.h"
-#include <bits/stdc++.h>
 
 using namespace std;
 

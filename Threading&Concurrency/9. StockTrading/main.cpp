@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include <mutex>
 #include <condition_variable>
 #include <thread>
@@ -15,6 +14,7 @@ enum OrderType {
 
 struct Order {
     string id;
+
     string userId;
     OrderType type;
     int quantity;
@@ -40,7 +40,6 @@ struct StockOrder
     mutex mtx;
     condition_variable cv;
 };
-
 
 class StockExecutor {
     mutex& mtx;
@@ -165,7 +164,7 @@ int main() {
         istringstream stream(input);
         string op;
         stream>>op;
-        
+
         if(op == "order") {
             // order 1 tata buy 100 100
             string userId, stockName, orderType;
@@ -174,7 +173,7 @@ int main() {
             stockExchange.placeOrder(Order{to_string(id), userId, orderType == "buy" ? BUY : SELL, quantity, price, stockName});
             id++;
         } else if(op == "cancel") {
-            
+
         }
     }
     return 0;

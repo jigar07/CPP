@@ -177,3 +177,13 @@ g++ main.cpp semaphore.cpp -o main.exe -pthread
 - Callback in c++
 - Return/passed as a value, reference, pointer in c++
 - command line input in c++ (cin, istringstream)
+- smart pointer in c++
+- Comparator operator for class, struct, or as a lamda or function for algo
+- Time in c++
+- Threading & Concurrency (Basically thread, state, mutex, condition_variable - [wait(), notify_all(), notify_one(), threadOb.joinable() then threadob.join()], stopFlag - in destructor for shutdown)
+  - 1. BasicThreadingC++
+  - 3. BlockingQueue
+  - 5. SQS
+  - 7. TaskScheduler (3 while loop in consumer)
+  - 8. Dining Philosopher
+  - 9. StockTrading (3 while loop)

@@ -1,4 +1,8 @@
-#include <bits/stdc++.h>
+#include <mutex>
+#include <thread>
+#include <iostream>
+#include <vector>
+
 using namespace std;
 
 // To make your Fork class more robust, explicitly delete copy and move constructors:

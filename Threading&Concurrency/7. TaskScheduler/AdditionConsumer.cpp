@@ -1,5 +1,6 @@
-#include <bits/stdc++.h>
 #include "AdditionConsumer.h"
+#include <iostream>
+#include <thread>
 using namespace std;
 
 void AdditionConsumer::consume(const CalculationMessage& msg) {

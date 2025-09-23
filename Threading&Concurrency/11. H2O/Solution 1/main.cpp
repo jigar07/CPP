@@ -94,8 +94,8 @@ int main() {
     while(true) {
         getline(cin, input);
         if(input == "exit") break;
-        if(input == "o") h2o.releaseOxygen();
-        if(input == "h") h2o.releaseHydroGen();
+        if(input == "O") h2o.releaseOxygen();
+        if(input == "H") h2o.releaseHydroGen();
     }
     return 0;
 }

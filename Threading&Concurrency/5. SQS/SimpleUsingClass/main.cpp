@@ -139,7 +139,7 @@ int main() {
         this_thread::sleep_for(chrono::milliseconds(100));
     }
 
-    // Give time for processing
+    // Give time for processing. This is required because we are destroying consumer in descructor.
     this_thread::sleep_for(chrono::seconds(10));
 
     // Destructor of SQS stops everything

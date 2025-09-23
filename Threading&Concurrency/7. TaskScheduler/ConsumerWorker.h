@@ -39,8 +39,7 @@ public:
                 task = messages.top();
                 cout << this_thread::get_id() << ": " << task.message << ", picked" << endl;
 
-                long long millisToWait = task.millisEpoch - duration_cast<milliseconds>(
-                    system_clock::now().time_since_epoch()).count();
+                long long millisToWait = task.millisEpoch - duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 
                 cout << this_thread::get_id() << ": " << task.message
                      << ", " << millisToWait << " remaining" << endl;
