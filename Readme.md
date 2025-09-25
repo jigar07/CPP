@@ -180,16 +180,24 @@ g++ main.cpp semaphore.cpp -o main.exe -pthread
 - smart pointer in c++
 - Comparator operator for class, struct, or as a lamda or function for algo
 - Time in c++
-- Threading & Concurrency (Basically thread, state, mutex, condition_variable - [wait(), notify_all(), notify_one(), threadOb.joinable() then threadob.join()], stopFlag - in destructor for shutdown)
 - Classes(Operator overloading, inheritance etc.), enum, struct, template in c++
+- dangling pointers, memory leak, segmetation fault
+    - https://chatgpt.com/share/68d51ade-6648-8008-bc5f-186a8a4531ac
 
 ## Threading difficult problems
+- Threading & Concurrency (Basically thread, state, mutex, condition_variable - [wait(), notify_all(), notify_one(), threadOb.joinable() then threadob.join()], stopFlag - in destructor for shutdown)
+  - Workers where while(true) is there and it has lock, cv.wait.
+  - Workers can be function or class method run() or class method operator overloaded (operator()(){})
+  - Workers are spawned as separate thread
+  - So usually atleast one struct for state, one worker running in while, one important class which has state and other defined/created and then main from which important class is called
+    - Also, go in depth instead of breadth. So, try to identify important state and methods
+    - **Basically first identify important methods(entity), implement those and then add concurrency/threading**
 - 1. BasicThreadingC++
 - 3. BlockingQueue
 - 5. SQS
 - 6. MessageBroker
 - 7. TaskScheduler (3 while loop in consumer)
-- 8. Dining Philosopher
+- 8. Dining Philosopher (timed_mutex)
 - 9. StockTrading (3 while loop)
 ## LLD difficult problems
 - 1. Cache-LLD

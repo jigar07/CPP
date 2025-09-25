@@ -17,10 +17,6 @@ struct State {
     void print() {
         cout<<"O: " << oxygen << ", H: " << hydrogen<<endl;
     }
-    void releaseIfPossible() {
-        if(isWaterPossible())
-            releaseWater();
-    }
     void releaseWater() {
         cout<<"releasing water: HHO" << endl;
         oxygen -= 1;
@@ -39,13 +35,14 @@ public:
     void run() {
         while(true) {
             unique_lock<mutex> lock(mtx);
-            state.print();
             while(!state.isWaterPossible() && !stopFlag.load()) {
                 cv.wait(lock);
-                state.print();
             }
             if (stopFlag.load()) break;
             state.releaseWater();
+            lock.unlock();
+            this_thread::sleep_for(chrono::seconds(5));
+            state.print();
         }
     }
 };
@@ -54,18 +51,23 @@ class H2O {
     State state;
     mutex mtx;
     condition_variable cv;
-    thread workerThread;
+    vector<thread> workerThreads;
     atomic<bool> stopFlag; // exiting when exit is entered
 public:
-    H2O():workerThread(&WaterMoleculeWorker::run, WaterMoleculeWorker(state, mtx, cv, stopFlag)) {}
+    H2O() {}
+    void startworkerThread() {
+        workerThreads.emplace_back(&WaterMoleculeWorker::run, WaterMoleculeWorker(state, mtx, cv, stopFlag));
+    }
     void releaseOxygen() {
         unique_lock<mutex> lock(mtx);
         state.oxygen += 1;
+        state.print();
         cv.notify_all();
     }
     void releaseHydroGen() {
         unique_lock<mutex> lock(mtx);
         state.hydrogen += 1;
+        state.print();
         cv.notify_all();
     }
     void shutdown() {
@@ -74,8 +76,10 @@ public:
             stopFlag = true;
         }
         cv.notify_all();
-        if (workerThread.joinable()) {
-            workerThread.join();  // Proper cleanup
+        for(auto& workerThread : workerThreads) {
+            if (workerThread.joinable()) {
+                workerThread.join();  // Proper cleanup
+            }
         }
     }
 
@@ -86,6 +90,8 @@ public:
 
 int main() {
     H2O h2o;
+    h2o.startworkerThread();
+    h2o.startworkerThread();
     // h2o.releaseOxygen();
     // h2o.releaseHydroGen();
     // h2o.releaseHydroGen();
