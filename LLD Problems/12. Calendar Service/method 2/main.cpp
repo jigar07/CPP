@@ -35,7 +35,7 @@ public:
 // DOMAIN CLASSES
 class User {
 public:
-    explicit User(string id) : id_(move(id)) {}
+    explicit User(string id) : id_(std::move(id)) {}
     const string& getId() const { return id_; }
 
     bool operator==(const User& other) const { return id_ == other.id_; }
@@ -67,7 +67,7 @@ private:
 class Location {
 public:
     Location(string id, string title, ILocationTypeData* typeData, LocationType locationType)
-        : id(move(id)), title(move(title)), typeData(typeData), locationType(locationType) {}
+        : id(std::move(id)), title(std::move(title)), typeData(typeData), locationType(locationType) {}
 
 private:
     string id;
@@ -79,7 +79,7 @@ private:
 class LocationTypeDataPhysical : public ILocationTypeData {
 public:
     LocationTypeDataPhysical(double lat, double lon, string address)
-        : latitude(lat), longitude(lon), address(move(address)) {}
+        : latitude(lat), longitude(lon), address(std::move(address)) {}
 
 private:
     double latitude;
@@ -89,7 +89,7 @@ private:
 
 class LocationTypeDataURL : public ILocationTypeData {
 public:
-    explicit LocationTypeDataURL(string url) : url(move(url)) {}
+    explicit LocationTypeDataURL(string url) : url(std::move(url)) {}
 
 private:
     string url;
@@ -112,7 +112,7 @@ class Event {
 public:
     Event(string id, const Slot& slot, vector<Participant> participants,
           const Location& location, EventType type)
-        : id(move(id)), slot(slot), participants(move(participants)),
+        : id(std::move(id)), slot(slot), participants(std::move(participants)),
           location(location), eventType(type) {}
 
     const Slot& getSlot() const { return slot; }
@@ -207,7 +207,7 @@ public:
                 });
                 if (!overlaps) filtered.push_back(slot);
             }
-            allSlots = move(filtered);
+            allSlots = std::move(filtered);
         }
         return allSlots;
     }

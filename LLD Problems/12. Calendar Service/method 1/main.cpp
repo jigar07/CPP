@@ -47,7 +47,7 @@ public:
 // DOMAIN CLASSES
 class User {
 public:
-    explicit User(string id) : id_(move(id)) {}
+    explicit User(string id) : id_(std::move(id)) {}
     const string& getId() const { return id_; }
     bool operator==(const User& other) const { return id_ == other.id_; }
 
@@ -78,7 +78,7 @@ private:
 class Location {
 public:
     Location(string id, string title, shared_ptr<ILocationTypeData> typeData, LocationType locationType)
-        : id(move(id)), title(move(title)), typeData(move(typeData)), locationType(locationType) {}
+        : id(std::move(id)), title(std::move(title)), typeData(std::move(typeData)), locationType(locationType) {}
 
 private:
     string id;
@@ -90,7 +90,7 @@ private:
 class LocationTypeDataPhysical : public ILocationTypeData {
 public:
     LocationTypeDataPhysical(double lat, double lon, string address)
-        : latitude(lat), longitude(lon), address(move(address)) {}
+        : latitude(lat), longitude(lon), address(std::move(address)) {}
 
 private:
     double latitude;
@@ -100,7 +100,7 @@ private:
 
 class LocationTypeDataURL : public ILocationTypeData {
 public:
-    explicit LocationTypeDataURL(string url) : url(move(url)) {}
+    explicit LocationTypeDataURL(string url) : url(std::move(url)) {}
 
 private:
     string url;
@@ -109,7 +109,7 @@ private:
 class Participant {
 public:
     Participant(shared_ptr<User> user, ParticipantType type, RSVPStatus rsvpStatus)
-        : user(move(user)), type(type), rsvpStatus(rsvpStatus) {}
+        : user(std::move(user)), type(type), rsvpStatus(rsvpStatus) {}
 
     shared_ptr<User> getUser() const { return user; }
 
@@ -123,8 +123,8 @@ class Event {
 public:
     Event(string id, Slot slot, vector<Participant> participants,
           shared_ptr<Location> location, EventType type)
-        : id(move(id)), slot(move(slot)), participants(move(participants)),
-          location(move(location)), eventType(type) {}
+        : id(std::move(id)), slot(std::move(slot)), participants(std::move(participants)),
+          location(std::move(location)), eventType(type) {}
 
     const Slot& getSlot() const { return slot; }
 
@@ -195,9 +195,9 @@ public:
     CalendarService(shared_ptr<IEventRepository> repo,
                     shared_ptr<NotificationService> notif,
                     shared_ptr<SlotService> slotServ)
-        : eventRepository(move(repo)),
-          notificationService(move(notif)),
-          slotService(move(slotServ)) {}
+        : eventRepository(std::move(repo)),
+          notificationService(std::move(notif)),
+          slotService(std::move(slotServ)) {}
 
     void createEvent(const shared_ptr<Event>& event) {
         eventRepository->save(event);
@@ -221,7 +221,7 @@ public:
                 });
                 if (!overlaps) filtered.push_back(slot);
             }
-            allSlots = move(filtered);
+            allSlots = std::move(filtered);
         }
         return allSlots;
     }
