@@ -10,12 +10,12 @@ Perform rate limiting logic for provided customer ID. Return true if the request
 ------
 ## Thought process
 - isRequestAllowed, refill are the core functionality for the class.
-- **IRateLimitingEntity**: entity based on which rate limiting should be apply
+- **IRateLimitingEntity**: entity based on which rate limiting should be apply. UserId, API Name etc.
 - **IRateLimiter**: Rate limiter algo such as tocket bucket, sliding window, fixed window
   - RateLimiter stores limiter in map based on id.
   - For ex:
-    - `TokenBucketRateLimiter` has `unordered_map<string, TokensBucket> buckets;`. So, for each id token bucket is stored. And, this token bucket is checked to find out if it is token or not
-    - `FixedWindowRateLimiter` has `unordered_map<string, Window> windows;`
+    - `TokenBucketRateLimiter` has `unordered_map<string, TokensBucket> buckets;`. So, for each id token bucket is stored. And, this token bucket is checked to find out if it is token or not. **TokensBucket**
+    - `FixedWindowRateLimiter` has `unordered_map<string, Window> windows;`. **Window**
 - **IRefillRule**: Rule for refill
 - Interfaces: IRateLimitingEntity, IRefillRule, IRateLimiter
 - Classes: User, API, TokenBucket, TokenBucketRateLimiter, ConstantRateRefillRule

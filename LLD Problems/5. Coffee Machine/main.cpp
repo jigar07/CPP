@@ -51,7 +51,7 @@ public:
     Ingredient() : name(""), quantity(Quantity(QuantityUnit::ML, 0)) {} // Default constructor
 
     Ingredient(string name, Quantity quantity)
-        : name(move(name)), quantity(move(quantity)) {}
+        : name(std::move(name)), quantity(std::move(quantity)) {}
 
     string getName() const { return name; }
     const Quantity& getQuantity() const { return quantity; }
@@ -61,11 +61,12 @@ public:
 // === INVENTORY ===
 
 class Inventory {
+    // It would be better to use map. This will be better for finding in checkIfSufficient method
     vector<Ingredient> ingredients;
 
 public:
     Inventory(vector<Ingredient> ingredients)
-        : ingredients(move(ingredients)) {}
+        : ingredients(std::move(ingredients)) {}
 
     void checkIfSufficient(const Ingredient& required) const {
         auto it = find_if(ingredients.begin(), ingredients.end(),
@@ -99,7 +100,7 @@ class Beverage {
 
 public:
     Beverage(BeverageType type, string name, vector<Ingredient> requiredIngredients)
-        : type(type), name(move(name)), requiredIngredients(move(requiredIngredients)) {}
+        : type(type), name(std::move(name)), requiredIngredients(std::move(requiredIngredients)) {}
 
     BeverageType getType() const { return type; }
     const vector<Ingredient>& getRequiredIngredients() const { return requiredIngredients; }
@@ -179,10 +180,10 @@ public:
                   Inventory inventory,
                   Battery battery,
                   vector<shared_ptr<IValidation>> validations)
-        : supportedBeverages(move(beverages)),
-          inventory(move(inventory)),
-          battery(move(battery)),
-          validations(move(validations)) {}
+        : supportedBeverages(std::move(beverages)),
+          inventory(std::move(inventory)),
+          battery(std::move(battery)),
+          validations(std::move(validations)) {}
 
     void vendBeverage(BeverageType type, const vector<Ingredient>& additionalIngredients) {
         for (const auto& val : validations) {

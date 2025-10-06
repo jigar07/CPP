@@ -5,7 +5,7 @@
   - It supports multiple beverages
   - It has method name vend:
     - It will first do validation.
-      - For validation (Strategy pattern for this):
+      - **For validation (Strategy pattern for this)**:
         - Check required ingredient for the beverage type is there or not
         - Check additional ingredient are there or not
         - Check vending machine battery

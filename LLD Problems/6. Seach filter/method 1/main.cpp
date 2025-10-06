@@ -16,27 +16,27 @@ struct Product {
     string category;
 };
 
-// ------------------ IFilterTypeData ------------------
-struct IFilterTypeData {
-    virtual ~IFilterTypeData() = default;
-};
+// // ------------------ IFilterTypeData ------------------
+// struct IFilterTypeData {
+//     virtual ~IFilterTypeData() = default;
+// };
 
-// ------------------ BooleanFilterTypeData ------------------
-struct BooleanFilterTypeData : public IFilterTypeData {
-    map<string, variant<string, double, map<string, variant<string, double>>>> left;
-    map<string, variant<string, double, map<string, variant<string, double>>>> right;
-};
+// // ------------------ BooleanFilterTypeData ------------------
+// struct BooleanFilterTypeData : public IFilterTypeData {
+//     map<string, variant<string, double, map<string, variant<string, double>>>> left;
+//     map<string, variant<string, double, map<string, variant<string, double>>>> right;
+// };
 
-// ------------------ NotFilterTypeData ------------------
-struct NotFilterTypeData : public IFilterTypeData {
-    map<string, variant<string, double, map<string, variant<string, double>>>> operand;
-};
+// // ------------------ NotFilterTypeData ------------------
+// struct NotFilterTypeData : public IFilterTypeData {
+//     map<string, variant<string, double, map<string, variant<string, double>>>> operand;
+// };
 
-// ------------------ NameFilterTypeData ------------------
-struct NameFilterTypeData : public IFilterTypeData {
-    string value;
-    string matchWay;
-};
+// // ------------------ NameFilterTypeData ------------------
+// struct NameFilterTypeData : public IFilterTypeData {
+//     string value;
+//     string matchWay;
+// };
 
 // ------------------ IStringMatchingStrategy ------------------
 struct IStringMatchingStrategy {
