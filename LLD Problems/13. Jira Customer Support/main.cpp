@@ -31,13 +31,13 @@ public:
     Agent() = default;
 
     Agent(string id, string name, vector<TicketDomain> domains, bool isOOO, string email)
-        : id(move(id)), name(move(name)), domains(move(domains)), isOOO(isOOO), email(move(email)) {}
+        : id(std::move(id)), name(std::move(name)), domains(std::move(domains)), isOOO(isOOO), email(std::move(email)) {}
 };
 
 class Customer {
 public:
     string id;
-    explicit Customer(string id) : id(move(id)) {}
+    explicit Customer(string id) : id(std::move(id)) {}
 };
 
 class Ticket {
@@ -59,8 +59,8 @@ public:
 
     Ticket(string id, string details, string title, vector<string> linkedReferenceIds,
            TicketDomain domain, TicketStatus status)
-        : id(move(id)), details(move(details)), title(move(title)),
-          linkedReferenceIds(move(linkedReferenceIds)), domain(domain), status(status), resolvedAt(0) {}
+        : id(std::move(id)), details(std::move(details)), title(std::move(title)),
+          linkedReferenceIds(std::move(linkedReferenceIds)), domain(domain), status(status), resolvedAt(0) {}
 };
 
 // Interfaces
@@ -186,7 +186,7 @@ private:
 public:
     TicketService(ITicketRepository& ticketRepo, AgentService& agentService,
                   vector<shared_ptr<IPreferenceStrategy>> strategies)
-        : ticketRepo(ticketRepo), agentService(agentService), preferenceStrategies(move(strategies)) {}
+        : ticketRepo(ticketRepo), agentService(agentService), preferenceStrategies(std::move(strategies)) {}
 
     Ticket createTicket(Ticket ticket) {
         ticket.id = to_string(rand());

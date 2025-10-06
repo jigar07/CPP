@@ -60,6 +60,9 @@ THU: 3
 - Classes
 - Properties
 - Top-Down methods:
+  - CronParser service's most important part:
+    - vector<unique_ptr<IExpressionTypeParser>> parsers_;
+    - map<int, ComponentTypeData> componentTypeDataMap_;
   - CronParser Service:
     - `private Map<Integer, ComponentTypeData> componentTypeDataMap;` - store all 6 component type(minute, hour, day of month, month, day of week, command) in sequence
     - private List<IExpressionTypeParser> parsers; - store different types of parser

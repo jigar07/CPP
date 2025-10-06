@@ -180,10 +180,10 @@ g++ main.cpp semaphore.cpp -o main.exe -pthread
 - smart pointer in c++
 - Comparator operator for class, struct, or as a lamda or function for algo
 - Time in c++
-- Classes(Operator overloading, inheritance etc.), enum, struct, template in c++
+- Classes(Operator overloading, inheritance etc.), struct, template in c++
 - dangling pointers, memory leak, segmetation fault
     - https://chatgpt.com/share/68d51ade-6648-8008-bc5f-186a8a4531ac
-
+- enum vs enum class in c++
 ## Threading difficult problems
 - Threading & Concurrency (Basically thread, state, mutex, condition_variable - [wait(), notify_all(), notify_one(), threadOb.joinable() then threadob.join()], stopFlag - in destructor for shutdown)
   - Workers where while(true) is there and it has lock, cv.wait.
@@ -200,9 +200,21 @@ g++ main.cpp semaphore.cpp -o main.exe -pthread
 - 8. Dining Philosopher (timed_mutex)
 - 9. StockTrading (3 while loop)
 ## LLD difficult problems
+- LLD is mostly about models (classes), repository (storage - inmemory or disk or DB storage for classes), services and strategies (which is changes convert it into class using strategy design pattern - like validation, filtering, matchrule etc)
+  - Find out common classes
+  - Then properties of classes (and methods)
+  - Then start with important method
+  - Then check OCP is followed or not. If not then mostly strategy is applied
 - 1. Cache-LLD
 - 3. Splitwise
 - 4. JsonNode in Notification
-- 5. Coffee machine
-- 6. Search filter
-- 7. API Rate limiter
+- 5. Coffee machine - strategy pattern for validation
+- 6. Search filter - strategy pattern for filtering
+- 7. API Rate limiter - RateLimitingEntity and strategy pattern for RefillRule, RateLimiter
+- 8. Ride sharing
+- 11. Food Order - strategy pattern for Restaurant Selection and Restaurant Filtering
+- 12. Calendar Service
+- 13. Jira customer support - assign ticket is most important, PreferenceStrategy
+- 14. Coupon service - CouponMatchRule(global, seller, product), CouponRewardRule (percentage, flat)
+- 15. Cricket match dashboard - StrikingPlayerStrategy (Wicket, OverChange, RunScore, ChainStrikingPlayerStrategy), ChainStrikingPlayerStrategy to apply StrikingPlayerStrategy one by one
+- 16. Cron parser - Difficult - IExpressionTypeParser (SimpleValueExpressionParser, CommaExpressionTypeParser, HyphenExpressionTypeParser)

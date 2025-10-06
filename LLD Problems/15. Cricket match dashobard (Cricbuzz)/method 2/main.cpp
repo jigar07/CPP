@@ -55,7 +55,7 @@ public:
     string teamId;
     vector<Ball> ballsPlayed;
 
-    Player(string id, string teamId) : id(move(id)), teamId(move(teamId)) {}
+    Player(string id, string teamId) : id(std::move(id)), teamId(std::move(teamId)) {}
 
     void play(const Ball& ball) {
         if (ball.type != BallType::NO_BALL && ball.type != BallType::WIDE) {
@@ -209,10 +209,10 @@ private:
 
 public:
     ChainStrikingPlayerStrategy(unique_ptr<IStrikingPlayerStrategy> s)
-        : self(move(s)) {}
+        : self(std::move(s)) {}
 
     void setNext(unique_ptr<ChainStrikingPlayerStrategy> nextChain) {
-        next = move(nextChain);
+        next = std::move(nextChain);
     }
 
 protected:
@@ -259,21 +259,21 @@ private:
     unique_ptr<ChainStrikingPlayerStrategy> chain;
 
 public:
-    explicit MatchService(MatchState s) : state(move(s)) {}
+    explicit MatchService(MatchState s) : state(std::move(s)) {}
 
     void setupStrategies() {
         auto run = make_unique<RunBasedStrikingPlayerStrategy>();
         auto wicket = make_unique<WicketBasedStrikingPlayerStrategy>();
         auto over = make_unique<OverChangeStrikingPlayerStrategy>();
 
-        auto chain1 = make_unique<ChainStrikingPlayerStrategy>(move(run));
-        auto chain2 = make_unique<ChainStrikingPlayerStrategy>(move(wicket));
-        auto chain3 = make_unique<ChainStrikingPlayerStrategy>(move(over));
+        auto chain1 = make_unique<ChainStrikingPlayerStrategy>(std::move(run));
+        auto chain2 = make_unique<ChainStrikingPlayerStrategy>(std::move(wicket));
+        auto chain3 = make_unique<ChainStrikingPlayerStrategy>(std::move(over));
 
-        chain2->setNext(move(chain3));
-        chain1->setNext(move(chain2));
+        chain2->setNext(std::move(chain3));
+        chain1->setNext(std::move(chain2));
 
-        chain = move(chain1);
+        chain = std::move(chain1);
     }
 
     void handleThrowBall(const Ball& ball) {

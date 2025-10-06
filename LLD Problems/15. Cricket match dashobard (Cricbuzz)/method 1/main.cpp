@@ -53,7 +53,7 @@ public:
     string teamId;
     vector<Ball> ballsPlayed;
 
-    Player(string id, string teamId) : id(move(id)), teamId(move(teamId)) {}
+    Player(string id, string teamId) : id(std::move(id)), teamId(std::move(teamId)) {}
 
     void play(const Ball& ball) {
         if (ball.type != BallType::NO_BALL && ball.type != BallType::WIDE) {
@@ -208,7 +208,7 @@ private:
 
 public:
     void addStrategy(unique_ptr<IStrikingPlayerStrategy> strategy) {
-        chain.push_back(move(strategy));
+        chain.push_back(std::move(strategy));
     }
 
 protected:
@@ -252,7 +252,7 @@ private:
     ChainStrikingPlayerStrategy chain;
 
 public:
-    explicit MatchService(MatchState s) : state(move(s)) {}
+    explicit MatchService(MatchState s) : state(std::move(s)) {}
 
     void setupStrategies() {
         chain.addStrategy(make_unique<RunBasedStrikingPlayerStrategy>());

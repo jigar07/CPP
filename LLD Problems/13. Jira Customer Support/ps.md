@@ -38,7 +38,7 @@ Persistence Layer - DB, Redis, In memory
     - assignTicket
       - Most important part of problem - **Finding right agent for the ticket**
       - **Like Food ordering system(filtering and sorting based on selection criteria) and Ride sharing (filter and sort ride), we will get all the agents and then filter application agents**
-        - IPreferenceStrategy to filter preference
+        - **IPreferenceStrategy** to filter preference
         - So, one strategy to filter the agents and another strategy to sort the agents
         - This is very common pattern might be used at different places. In parking lot also it can be used
         - `orCondtion`, `andCondition` can also be used (Just like amazon filter)

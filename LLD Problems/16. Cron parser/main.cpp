@@ -86,7 +86,7 @@ class CronComponent {
     unique_ptr<IComponentTypeData> data_;
 public:
     CronComponent(CronComponentType type, unique_ptr<IComponentTypeData> data)
-        : type_(type), data_(move(data)) {}
+        : type_(type), data_(std::move(data)) {}
 
     CronComponentType getType() const { return type_; }
     const IComponentTypeData* getData() const { return data_.get(); }
@@ -97,7 +97,7 @@ class CronExpression {
     vector<CronComponent> components_;
 public:
     CronExpression(vector<CronComponent> components)
-        : components_(move(components)) {}
+        : components_(std::move(components)) {}
 
     const vector<CronComponent>& getComponents() const {
         return components_;
@@ -208,7 +208,7 @@ class CronParser {
 public:
     CronParser(vector<unique_ptr<IExpressionTypeParser>> parsers,
                map<int, ComponentTypeData> map)
-        : parsers_(move(parsers)), componentTypeDataMap_(move(map)) {}
+        : parsers_(std::move(parsers)), componentTypeDataMap_(std::move(map)) {}
 
     CronExpression parse(const string& cronExpression) {
         istringstream ss(cronExpression);
@@ -233,7 +233,7 @@ public:
                     const ComponentTypeData& typeData = componentTypeDataMap_.at(i);
                     if (parser->isValid(part, typeData.getValidRange())) {
                         auto data = parser->parse(part);
-                        parsedComponents.emplace_back(typeData.getType(), move(data));
+                        parsedComponents.emplace_back(typeData.getType(), std::move(data));
                         parsed = true;
                         break;
                     }
@@ -247,9 +247,9 @@ public:
 
         // Add command part
         auto commandData = make_unique<ComponentTypeDataString>(parts[5]);
-        parsedComponents.emplace_back(CronComponentType::COMMAND, move(commandData));
+        parsedComponents.emplace_back(CronComponentType::COMMAND, std::move(commandData));
 
-        return CronExpression(move(parsedComponents));
+        return CronExpression(std::move(parsedComponents));
     }
 };
 
@@ -313,7 +313,8 @@ CronService()
 int main() {
     CronService service;
     string expression = "1,15 0 1,32 1,4 1-5 /usr/bin/find";
-    // string expression = "1,15 0 1,15 1,4 1-5 /usr/bin/find";
+    service.parseAndPrint(expression);
+    expression = "1,15 0 1,15 1,4 1-5 /usr/bin/find";
     service.parseAndPrint(expression);
 
     return 0;
